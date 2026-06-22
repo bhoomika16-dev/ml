@@ -1,0 +1,49 @@
+5). Develop a program to implement k-Nearest Neighbour algorithm to classify the randomly generated 100 values of x in the range of [0,1]. Perform the following based on dataset generated. 
+a. Label the first 50 points {x1,......,x50} as follows: if (xi ≤ 0.5), then xi ε Class1, else xi ε Class1.
+b. Classify the remaining points, x51,......,x100 using KNN. Perform this for k=1,2,3,4,5,20,30. 
+
+import numpy as np
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+# Step 1: Generate 100 random values in [0,1]
+np.random.seed(42)
+X = np.random.rand(100, 1)
+
+# Step 2: Create labels based on condition (xi ≤ 0.5 → Class 1, else Class 2)
+y = np.where(X.flatten() <= 0.5, 1, 2)
+
+# Step 3: Split data
+# First 50 points → Training
+X_train = X[:50]
+y_train = y[:50]
+
+# Remaining 50 points → Testing
+X_test = X[50:]
+y_test = y[50:]
+
+# Step 4: Perform KNN for different k values
+k_values = [1, 2, 3, 4, 5, 20, 30]
+accuracy_results = []
+
+for k in k_values:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+
+    y_pred = knn.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    accuracy_results.append(accuracy)
+
+    print(f"Accuracy for k={k}: {accuracy:.4f}")
+
+# Step 5: Plot results
+plt.figure(figsize=(8,5))
+plt.plot(k_values, accuracy_results, marker='o')
+plt.title("KNN Accuracy for Different k Values")
+plt.xlabel("k")
+plt.ylabel("Accuracy")
+plt.grid(True)
+plt.show()
